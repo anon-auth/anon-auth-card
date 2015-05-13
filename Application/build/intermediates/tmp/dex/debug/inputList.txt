@@ -1,0 +1,7 @@
+/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/classes/debug
+/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/pre-dexed/debug/internal_impl-21.0.2-1e5a5bc1da04827bfb7f64ee8bebff269ae92996.jar
+/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/pre-dexed/debug/support-annotations-21.0.2-6b83436c3b2bec3716e25adbab92413a7b2590ff.jar
+/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/pre-dexed/debug/classes-139e44598fc548cc5a2ea3681f6ce655b374dc0d.jar
+/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/pre-dexed/debug/classes-f9c1344ce5c9921c8cdb621e57ecf7137806bb11.jar
+/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/pre-dexed/debug/internal_impl-21.0.2-67898373a586177538139c07f29cb0852b03e395.jar
+/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/pre-dexed/debug/classes-6e10e70c775a8b660760f8eee0222016da2aa62f.jar
