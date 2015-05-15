@@ -37,6 +37,13 @@
         <dex dex="/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/pre-dexed/debug/classes-f9c1344ce5c9921c8cdb621e57ecf7137806bb11.jar" />
     </item>
     <item
+        jar="/home/asya/android-workspace/CardEmulation2/Application/libs/libanonauth1d.jar"
+        jumboMode="false"
+        revision="22.0.1"
+        sha1="ca716e0b8ba2ba508b0d73dbae71d6553485260a">
+        <dex dex="/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/pre-dexed/debug/libanonauth1d-6714513b2a9e355dc2682882f94b7b241b91da90.jar" />
+    </item>
+    <item
         jar="/home/asya/android-workspace/CardEmulation2/Application/build/intermediates/exploded-aar/com.android.support/support-v4/21.0.2/classes.jar"
         jumboMode="false"
         revision="22.0.1"

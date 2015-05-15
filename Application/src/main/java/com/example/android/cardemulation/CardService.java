@@ -16,11 +16,22 @@
 
 package com.example.android.cardemulation;
 
+import edu.mit.anonauth.*;
 import android.nfc.cardemulation.HostApduService;
 import android.os.Bundle;
 import com.example.android.common.logger.Log;
+import android.util.Base64;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.util.Arrays;
+import java.io.ByteArrayInputStream;
+import java.util.Scanner;
 
 public class CardService extends HostApduService {
     private static final String TAG = "CardService";
@@ -36,6 +47,50 @@ public class CardService extends HostApduService {
     // "UNKNOWN" status word sent in response to invalid APDU command (0x0000)
     private static final byte[] UNKNOWN_CMD_SW = HexStringToByteArray("0000");
     private static final byte[] SELECT_APDU = BuildSelectApdu(ACCESS_CARD_AID);
+    private static final String CARD_FILE = "cardInfo.txt";
+    //Hardcoded encoding of card information
+
+    ProtocolCard protocolCard;
+
+    //Method to get a protocol card out of a string containing card information
+    public ProtocolCard getCard(String str) {
+        byte[] enc = Base64.decode(str, Base64.DEFAULT);
+        ByteArrayInputStream bi = new ByteArrayInputStream(enc);
+        ObjectInputStream si = null;
+        ProtocolCard protocolDoor = null;
+        try {
+            si = new ObjectInputStream(bi);
+            protocolCard = (ProtocolCard) si.readObject();
+        } catch (Exception e) {
+            throw new RuntimeException("Deserialization error.");
+        }
+        return protocolCard;
+    }
+
+    //Load String representing card information out of a file
+    public String loadCardInfo(String fileName) {
+        InputStream cardStream;
+        try {
+            cardStream = getApplicationContext().getAssets().open(fileName);
+        } catch (IOException e) {
+            throw new RuntimeException("Card file not found.");
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(cardStream));
+        StringBuilder out = new StringBuilder();
+        String line = "";
+        try {
+            line = reader.readLine();
+        } catch (IOException e) {
+            throw new RuntimeException("Card file empty.");
+        }
+        try {
+            reader.close();
+        } catch (IOException e) {
+            throw new RuntimeException("Reader failed to close.");
+        }
+        return line;
+    }
+
 
     /**
      * Called if the connection to the NFC card is lost, in order to let the application know the
@@ -69,6 +124,7 @@ public class CardService extends HostApduService {
     // BEGIN_INCLUDE(processCommandApdu)
     @Override
     public byte[] processCommandApdu(byte[] commandApdu, Bundle extras) {
+        protocolCard = getCard(loadCardInfo(CARD_FILE));
         Log.i(TAG, "Received APDU: " + ByteArrayToHexString(commandApdu));
         // If the APDU matches the SELECT AID command for this service, send an ok response
         // Then if the APDU matches the broadcast header from the door, parse the broadcast and return the necessary HMAC if appropriate
@@ -76,20 +132,14 @@ public class CardService extends HostApduService {
         if (Arrays.equals(SELECT_APDU, commandApdu)) {
             return SELECT_OK_SW;
         } else if (Arrays.equals(BROADCAST_APDU_HEADER, Arrays.copyOfRange(commandApdu, 0, 4))) {
-            return parseBroadcast(Arrays.copyOfRange(commandApdu, 5, commandApdu.length));
+            //Get the points, then use them to authenticate and send back a response
+            return protocolCard.authenticate(Arrays.copyOfRange(commandApdu, 5, commandApdu.length));
         } else {
             return UNKNOWN_CMD_SW;
         }
     }
     // END_INCLUDE(processCommandApdu)
 
-    //Parses the broadcast for the points, challenge, secret hash and k
-    //Then returns byte[] equivalent to HMAC(challenge, secret)
-    //TODO: Fill in correct parseBroadcast ocde
-    public byte[] parseBroadcast(byte[] broadcast){
-        Log.i(TAG, "Sending back: " + ByteArrayToHexString(broadcast));
-        return broadcast;
-    }
     /**
      * Build APDU for SELECT AID command. This command indicates which service a reader is
      * interested in communicating with. See ISO 7816-4.
