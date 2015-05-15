@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="libanonauth1c-java7">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/Application/libs/libanonauth1c-java7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
